@@ -75,13 +75,15 @@ def get_weather(latitude, longitude, city_name):
         response = requests.get(url, params=params, timeout=20)
         response.raise_for_status()
         data = response.json()
-    except requests.exceptions.RequestException:
+    except requests.exceptions.RequestException as e:
+        print(f"[weather.py] Request to Open-Meteo failed: {e}")
         return None, None
 
     current = data.get("current")
     daily = data.get("daily")
 
     if not current or not daily:
+        print(f"[weather.py] Unexpected API response, missing current/daily: {data}")
         return None, None
 
     condition, icon = _describe(current.get("weather_code"))

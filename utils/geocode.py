@@ -21,8 +21,9 @@ def get_coordinates(city_name):
         response = requests.get(url, params=params, timeout=20)
         response.raise_for_status()
         data = response.json()
-    except requests.exceptions.RequestException:
+    except requests.exceptions.RequestException as e:
         # Network error, timeout, or bad response from the API
+        print(f"[geocode.py] Request to Open-Meteo failed: {e}")
         return None
 
     results = data.get("results")
