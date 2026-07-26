@@ -18,7 +18,7 @@ def get_coordinates(city_name):
     }
 
     try:
-        response = requests.get(url, params=params, timeout=10)
+        response = requests.get(url, params=params, timeout=20)
         response.raise_for_status()
         data = response.json()
     except requests.exceptions.RequestException:
