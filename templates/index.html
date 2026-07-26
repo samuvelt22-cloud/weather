@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Forecast</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <!-- Navigation menu bar -->
+    <nav class="site-nav">
+        <div class="nav-container">
+            <a href="{{ url_for('index') }}" class="nav-brand">Weather Forecast</a>
+            <div class="nav-links">
+                <a href="{{ url_for('index') }}" class="nav-link {% if request.endpoint == 'index' %}active{% endif %}">Home</a>
+                <a href="{{ url_for('about') }}" class="nav-link {% if request.endpoint == 'about' %}active{% endif %}">About</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Decorative sky layer: stars, moon glow, clouds, rain, wind swirls, particles -->
+    <div class="sky" aria-hidden="true">
+        <div class="stars">
+            <span class="star star-1"></span>
+            <span class="star star-2"></span>
+            <span class="star star-3"></span>
+            <span class="star star-4"></span>
+            <span class="star star-5"></span>
+            <span class="star star-6"></span>
+            <span class="star star-7"></span>
+            <span class="star star-8"></span>
+        </div>
+
+        <div class="moon-glow"></div>
+
+        <div class="cloud cloud-1"></div>
+        <div class="cloud cloud-2"></div>
+        <div class="cloud cloud-3"></div>
+
+        <div class="rain">
+            <span class="drop drop-1"></span>
+            <span class="drop drop-2"></span>
+            <span class="drop drop-3"></span>
+            <span class="drop drop-4"></span>
+            <span class="drop drop-5"></span>
+            <span class="drop drop-6"></span>
+        </div>
+
+        <div class="wind-swirl wind-swirl-1"></div>
+        <div class="wind-swirl wind-swirl-2"></div>
+
+        <div class="particle particle-1"></div>
+        <div class="particle particle-2"></div>
+        <div class="particle particle-3"></div>
+        <div class="particle particle-4"></div>
+
+        <div class="abstract-shape shape-circle"></div>
+        <div class="abstract-shape shape-ring"></div>
+    </div>
+
+    <header class="hero">
+        <div class="hero-content glass-panel">
+            <p class="eyebrow">Open-Meteo Forecast</p>
+            <h1 class="hero-title">Weather Forecast</h1>
+            <p class="hero-subtitle">Real-time weather updates powered by Open-Meteo API.</p>
+
+            <form class="search-form" action="{{ url_for('index') }}" method="POST">
+                <label for="city" class="visually-hidden">City name</label>
+                <input
+                    type="text"
+                    id="city"
+                    name="city"
+                    class="city-input"
+                    placeholder="Enter a city, e.g. Madurai"
+                    required
+                    autocomplete="off"
+                >
+                <button type="submit" class="search-button">Search</button>
+            </form>
+        </div>
+    </header>
+
+    <main class="main-content">
+
+        {% if error %}
+        <div class="error-message" role="alert">{{ error }}</div>
+        {% endif %}
+
+        {% if weather %}
+        <section class="weather-section glass-panel" aria-label="Current weather">
+            <div class="weather-header">
+                <h2 class="weather-city">{{ weather.city }}</h2>
+                <p class="weather-condition">{{ weather.condition }}</p>
+            </div>
+
+            <div class="weather-main">
+                <img
+                    class="weather-icon"
+                    src="{{ weather.icon }}"
+                    alt="{{ weather.condition }}"
+                >
+                <p class="weather-temp">{{ weather.temperature }}&deg;C</p>
+            </div>
+
+            <div class="weather-details">
+                <article class="detail-card">
+                    <p class="detail-label">Feels Like</p>
+                    <p class="detail-value">{{ weather.feels_like }}&deg;C</p>
+                </article>
+
+                <article class="detail-card">
+                    <p class="detail-label">Humidity</p>
+                    <p class="detail-value">{{ weather.humidity }}%</p>
+                </article>
+
+                <article class="detail-card">
+                    <p class="detail-label">Wind Speed</p>
+                    <p class="detail-value">{{ weather.wind_speed }} km/h</p>
+                </article>
+
+                <article class="detail-card">
+                    <p class="detail-label">Sunrise</p>
+                    <p class="detail-value">{{ weather.sunrise }}</p>
+                </article>
+
+                <article class="detail-card">
+                    <p class="detail-label">Sunset</p>
+                    <p class="detail-value">{{ weather.sunset }}</p>
+                </article>
+            </div>
+        </section>
+        {% endif %}
+
+        {% if forecast %}
+        <section class="forecast-section" aria-label="Weather forecast">
+            <h2 class="section-title">5-Day Forecast</h2>
+
+            <div class="forecast-grid">
+                {% for day in forecast %}
+                <article class="forecast-card glass-panel">
+                    <p class="forecast-day">{{ day.day }}</p>
+                    <img
+                        class="forecast-icon"
+                        src="{{ day.icon }}"
+                        alt="{{ day.description }}"
+                    >
+                    <p class="forecast-temps">
+                        <span class="temp-max">{{ day.max_temp }}&deg;</span>
+                        <span class="temp-min">{{ day.min_temp }}&deg;</span>
+                    </p>
+                    <p class="forecast-description">{{ day.description }}</p>
+                </article>
+                {% endfor %}
+            </div>
+        </section>
+        {% endif %}
+
+    </main>
+
+    <footer class="site-footer">
+        <p>Weather data provided by Open-Meteo.</p>
+    </footer>
+
+</body>
+</html>

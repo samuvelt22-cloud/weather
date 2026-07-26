@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About | Weather Forecast</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        /* ==========================================================================
+   Weather Forecast — Dark Navy Glassmorphism Theme
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
+
+:root {
+    /* Core navy palette */
+    --navy-deepest: #061A40;
+    --navy-dark: #0B2545;
+    --navy-mid: #13315C;
+    --navy-light: #134074;
+
+    /* Accents */
+    --white: #FFFFFF;
+    --sky-blue: #6EC6FF;
+    --pale-blue: #A8D8FF;
+
+    /* Derived */
+    --glass-fill: rgba(19, 49, 92, 0.35);
+    --glass-fill-soft: rgba(168, 216, 255, 0.06);
+    --glass-border: rgba(168, 216, 255, 0.18);
+    --shadow-soft: 0 20px 50px rgba(2, 8, 22, 0.55);
+    --shadow-inset: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+
+    --font-display: 'Space Grotesk', 'Segoe UI', sans-serif;
+    --font-body: 'Inter', 'Segoe UI', sans-serif;
+
+    --radius-lg: 28px;
+    --radius-md: 18px;
+    --radius-sm: 12px;
+}
+
+/* ==========================================================================
+   Reset & base
+   ========================================================================== */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    min-height: 100vh;
+    font-family: var(--font-body);
+    color: var(--white);
+    background:
+        radial-gradient(ellipse 900px 600px at 50% -10%, rgba(110, 198, 255, 0.16), transparent 60%),
+        linear-gradient(180deg, var(--navy-deepest) 0%, var(--navy-dark) 45%, var(--navy-mid) 100%);
+    background-attachment: fixed;
+    overflow-x: hidden;
+    position: relative;
+    line-height: 1.5;
+}
+
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
+
+img {
+    max-width: 100%;
+    display: block;
+}
+
+/* ==========================================================================
+   Glassmorphism panel
+   ========================================================================== */
+
+.glass-panel {
+    background: var(--glass-fill);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-lg);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    box-shadow: var(--shadow-soft), var(--shadow-inset);
+}
+
+/* ==========================================================================
+   Decorative sky layer (behind all content)
+   ========================================================================== */
+
+.sky {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+/* --- Moon glow: the signature ambient halo --- */
+.moon-glow {
+    position: absolute;
+    top: -180px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 620px;
+    height: 620px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(168, 216, 255, 0.35) 0%, rgba(110, 198, 255, 0.14) 35%, transparent 70%);
+    filter: blur(4px);
+    animation: moon-pulse 8s ease-in-out infinite;
+}
+
+@keyframes moon-pulse {
+    0%, 100% { opacity: 0.75; transform: translateX(-50%) scale(1); }
+    50%      { opacity: 1;    transform: translateX(-50%) scale(1.06); }
+}
+
+/* --- Stars --- */
+.stars {
+    position: absolute;
+    inset: 0;
+}
+
+.star {
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    background: var(--white);
+    border-radius: 50%;
+    box-shadow: 0 0 6px 1px rgba(255, 255, 255, 0.8);
+    animation: twinkle 3.5s ease-in-out infinite;
+}
+
+.star-1 { top: 8%;  left: 12%; animation-delay: 0s; }
+.star-2 { top: 15%; left: 82%; animation-delay: 0.4s; }
+.star-3 { top: 25%; left: 30%; animation-delay: 0.8s; }
+.star-4 { top: 6%;  left: 55%; animation-delay: 1.2s; }
+.star-5 { top: 35%; left: 92%; animation-delay: 1.6s; width: 2px; height: 2px; }
+.star-6 { top: 45%; left: 6%;  animation-delay: 2s; }
+.star-7 { top: 18%; left: 68%; animation-delay: 2.4s; width: 2px; height: 2px; }
+.star-8 { top: 50%; left: 45%; animation-delay: 2.8s; }
+
+@keyframes twinkle {
+    0%, 100% { opacity: 0.25; transform: scale(1); }
+    50%      { opacity: 1;    transform: scale(1.4); }
+}
+
+/* --- Clouds --- */
+.cloud {
+    position: absolute;
+    background: rgba(168, 216, 255, 0.08);
+    border-radius: 100px;
+    filter: blur(1px);
+}
+
+.cloud::before,
+.cloud::after {
+    content: "";
+    position: absolute;
+    background: inherit;
+    border-radius: 50%;
+}
+
+.cloud-1 {
+    top: 12%;
+    left: -10%;
+    width: 260px;
+    height: 70px;
+    animation: drift 40s linear infinite;
+}
+.cloud-1::before { width: 110px; height: 110px; top: -55px; left: 30px; }
+.cloud-1::after  { width: 90px;  height: 90px;  top: -40px; left: 140px; }
+
+.cloud-2 {
+    top: 28%;
+    left: -20%;
+    width: 200px;
+    height: 55px;
+    opacity: 0.7;
+    animation: drift 55s linear infinite;
+    animation-delay: -15s;
+}
+.cloud-2::before { width: 85px; height: 85px; top: -42px; left: 20px; }
+.cloud-2::after  { width: 70px; height: 70px; top: -32px; left: 110px; }
+
+.cloud-3 {
+    top: 4%;
+    left: -15%;
+    width: 180px;
+    height: 48px;
+    opacity: 0.5;
+    animation: drift 65s linear infinite;
+    animation-delay: -30s;
+}
+.cloud-3::before { width: 75px; height: 75px; top: -36px; left: 15px; }
+.cloud-3::after  { width: 60px; height: 60px; top: -28px; left: 95px; }
+
+@keyframes drift {
+    from { transform: translateX(0); }
+    to   { transform: translateX(140vw); }
+}
+
+/* --- Rain drops --- */
+.rain {
+    position: absolute;
+    inset: 0;
+}
+
+.drop {
+    position: absolute;
+    top: -10%;
+    width: 2px;
+    height: 24px;
+    background: linear-gradient(180deg, transparent, var(--sky-blue));
+    opacity: 0.5;
+    animation: fall 2.6s linear infinite;
+}
+
+.drop-1 { left: 15%; animation-delay: 0s; }
+.drop-2 { left: 33%; animation-delay: 0.5s; }
+.drop-3 { left: 50%; animation-delay: 1s; }
+.drop-4 { left: 68%; animation-delay: 1.4s; }
+.drop-5 { left: 80%; animation-delay: 0.2s; }
+.drop-6 { left: 92%; animation-delay: 1.8s; }
+
+@keyframes fall {
+    0%   { transform: translateY(0);     opacity: 0; }
+    10%  { opacity: 0.6; }
+    100% { transform: translateY(110vh); opacity: 0; }
+}
+
+/* --- Wind swirls --- */
+.wind-swirl {
+    position: absolute;
+    border: 2px solid rgba(110, 198, 255, 0.2);
+    border-right-color: transparent;
+    border-bottom-color: transparent;
+    border-radius: 50%;
+    animation: swirl-spin 12s linear infinite;
+}
+
+.wind-swirl-1 {
+    top: 60%;
+    left: 8%;
+    width: 90px;
+    height: 90px;
+}
+
+.wind-swirl-2 {
+    top: 72%;
+    left: 78%;
+    width: 60px;
+    height: 60px;
+    animation-duration: 9s;
+    animation-direction: reverse;
+}
+
+@keyframes swirl-spin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+}
+
+/* --- Glowing particles --- */
+.particle {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--sky-blue);
+    box-shadow: 0 0 12px 3px rgba(110, 198, 255, 0.7);
+    animation: float-up 10s ease-in-out infinite;
+}
+
+.particle-1 { top: 80%; left: 20%; animation-delay: 0s; }
+.particle-2 { top: 85%; left: 45%; animation-delay: 2.5s; width: 4px; height: 4px; }
+.particle-3 { top: 90%; left: 65%; animation-delay: 5s; }
+.particle-4 { top: 78%; left: 88%; animation-delay: 7.5s; width: 5px; height: 5px; }
+
+@keyframes float-up {
+    0%   { transform: translateY(0) translateX(0); opacity: 0; }
+    15%  { opacity: 1; }
+    100% { transform: translateY(-70vh) translateX(20px); opacity: 0; }
+}
+
+/* --- Abstract weather shapes --- */
+.abstract-shape {
+    position: absolute;
+    border-radius: 50%;
+}
+
+.shape-circle {
+    top: 55%;
+    left: -6%;
+    width: 220px;
+    height: 220px;
+    background: radial-gradient(circle, rgba(19, 64, 116, 0.5), transparent 70%);
+}
+
+.shape-ring {
+    top: 10%;
+    right: -8%;
+    width: 260px;
+    height: 260px;
+    border: 1px solid rgba(168, 216, 255, 0.12);
+    background: transparent;
+}
+
+/* ==========================================================================
+   Layout wrapper
+   ========================================================================== */
+
+.site-nav,
+header.hero,
+.main-content,
+.site-footer {
+    position: relative;
+    z-index: 1;
+}
+
+/* ==========================================================================
+   Navigation menu bar
+   ========================================================================== */
+
+.site-nav {
+    background: var(--glass-fill);
+    border-bottom: 1px solid var(--glass-border);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+}
+
+.nav-container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.nav-brand {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: var(--white);
+    text-decoration: none;
+    letter-spacing: -0.01em;
+}
+
+.nav-links {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.nav-link {
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--pale-blue);
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-sm);
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.nav-link:hover {
+    background: rgba(168, 216, 255, 0.1);
+    color: var(--white);
+}
+
+.nav-link.active {
+    background: linear-gradient(180deg, var(--pale-blue), var(--sky-blue));
+    color: var(--navy-deepest);
+    font-weight: 600;
+}
+
+@media (max-width: 480px) {
+    .nav-container {
+        justify-content: center;
+        text-align: center;
+    }
+}
+
+/* ==========================================================================
+   Hero
+   ========================================================================== */
+
+.hero {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 5rem 1.5rem 3rem;
+}
+
+.hero-content {
+    width: 100%;
+    max-width: 620px;
+    padding: 3rem 2.5rem;
+    text-align: center;
+}
+
+.eyebrow {
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--pale-blue);
+    margin-bottom: 0.75rem;
+}
+
+.hero-title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(2.4rem, 6vw, 3.4rem);
+    letter-spacing: -0.02em;
+    background: linear-gradient(180deg, var(--white) 20%, var(--pale-blue) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    margin-bottom: 0.75rem;
+}
+
+.hero-subtitle {
+    font-size: 1rem;
+    color: var(--pale-blue);
+    opacity: 0.9;
+    margin-bottom: 2.25rem;
+}
+
+/* --- Search form --- */
+.search-form {
+    display: flex;
+    gap: 0.75rem;
+    max-width: 420px;
+    margin: 0 auto;
+}
+
+.city-input {
+    flex: 1;
+    padding: 0.9rem 1.25rem;
+    font-family: var(--font-body);
+    font-size: 1rem;
+    color: var(--white);
+    background: rgba(6, 26, 64, 0.55);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-sm);
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.city-input::placeholder {
+    color: rgba(168, 216, 255, 0.55);
+}
+
+.city-input:focus {
+    border-color: var(--sky-blue);
+    box-shadow: 0 0 0 3px rgba(110, 198, 255, 0.25);
+}
+
+.search-button {
+    padding: 0.9rem 1.75rem;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--navy-deepest);
+    background: linear-gradient(180deg, var(--pale-blue), var(--sky-blue));
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    box-shadow: 0 8px 20px rgba(110, 198, 255, 0.3);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.search-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 26px rgba(110, 198, 255, 0.4);
+}
+
+.search-button:active {
+    transform: translateY(0);
+}
+
+/* ==========================================================================
+   Main content
+   ========================================================================== */
+
+.main-content {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 1.5rem 4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+}
+
+/* --- Error message --- */
+.error-message {
+    text-align: center;
+    padding: 1rem 1.5rem;
+    color: var(--white);
+    background: rgba(255, 99, 99, 0.12);
+    border: 1px solid rgba(255, 120, 120, 0.35);
+    border-radius: var(--radius-md);
+}
+
+/* ==========================================================================
+   Weather section
+   ========================================================================== */
+
+.weather-section {
+    padding: 2.5rem;
+    text-align: center;
+}
+
+.weather-header {
+    margin-bottom: 1.5rem;
+}
+
+.weather-city {
+    font-family: var(--font-display);
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: var(--white);
+}
+
+.weather-condition {
+    color: var(--pale-blue);
+    text-transform: capitalize;
+    margin-top: 0.25rem;
+}
+
+.weather-main {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+}
+
+.weather-icon {
+    width: 84px;
+    height: 84px;
+    filter: drop-shadow(0 0 14px rgba(110, 198, 255, 0.45));
+}
+
+.weather-temp {
+    font-family: var(--font-display);
+    font-size: 3.5rem;
+    font-weight: 700;
+    color: var(--white);
+}
+
+.weather-details {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 1rem;
+}
+
+.detail-card {
+    background: var(--glass-fill-soft);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-sm);
+    padding: 1rem 0.75rem;
+}
+
+.detail-label {
+    font-size: 0.75rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--pale-blue);
+    opacity: 0.8;
+    margin-bottom: 0.4rem;
+}
+
+.detail-value {
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--white);
+}
+
+/* ==========================================================================
+   Forecast section
+   ========================================================================== */
+
+.section-title {
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--white);
+    margin-bottom: 1.25rem;
+    text-align: center;
+}
+
+.forecast-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1.25rem;
+}
+
+.forecast-card {
+    padding: 1.5rem 1rem;
+    text-align: center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.forecast-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 24px 40px rgba(2, 8, 22, 0.6), var(--shadow-inset);
+}
+
+.forecast-day {
+    font-family: var(--font-display);
+    font-weight: 600;
+    color: var(--pale-blue);
+    margin-bottom: 0.5rem;
+}
+
+.forecast-icon {
+    width: 56px;
+    height: 56px;
+    margin: 0 auto 0.5rem;
+    filter: drop-shadow(0 0 10px rgba(110, 198, 255, 0.4));
+}
+
+.forecast-temps {
+    display: flex;
+    justify-content: center;
+    gap: 0.6rem;
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    margin-bottom: 0.4rem;
+}
+
+.temp-max {
+    font-weight: 700;
+    color: var(--white);
+}
+
+.temp-min {
+    font-weight: 500;
+    color: rgba(168, 216, 255, 0.65);
+}
+
+.forecast-description {
+    font-size: 0.85rem;
+    color: var(--pale-blue);
+    text-transform: capitalize;
+    opacity: 0.85;
+}
+
+/* ==========================================================================
+   Footer
+   ========================================================================== */
+
+.site-footer {
+    text-align: center;
+    padding: 2rem 1.5rem 2.5rem;
+    color: rgba(168, 216, 255, 0.6);
+    font-size: 0.85rem;
+    letter-spacing: 0.02em;
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+
+@media (max-width: 640px) {
+    .hero {
+        padding: 3.5rem 1rem 2.5rem;
+    }
+
+    .hero-content {
+        padding: 2.25rem 1.5rem;
+    }
+
+    .search-form {
+        flex-direction: column;
+    }
+
+    .weather-main {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .weather-temp {
+        font-size: 2.75rem;
+    }
+
+    .moon-glow {
+        width: 420px;
+        height: 420px;
+        top: -140px;
+    }
+}
+
+/* Respect reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+    .moon-glow,
+    .star,
+    .cloud-1,
+    .cloud-2,
+    .cloud-3,
+    .drop,
+    .wind-swirl,
+    .particle {
+        animation: none;
+    }
+}
+
+    </style>
+</head>
+<body>
+
+    <!-- Navigation menu bar -->
+    <nav class="site-nav">
+        <div class="nav-container">
+            <a href="{{ url_for('index') }}" class="nav-brand">Weather Forecast</a>
+            <div class="nav-links">
+                <a href="{{ url_for('about') }}" class="nav-link {% if request.endpoint == 'about' %}active{% endif %}">HOME</a>
+                <a href="{{ url_for('index') }}" class="nav-link {% if request.endpoint == 'index' %}active{% endif %}">WEATHER</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Decorative sky layer: stars, moon glow, clouds, rain, wind swirls, particles -->
+    <div class="sky" aria-hidden="true">
+        <div class="stars">
+            <span class="star star-1"></span>
+            <span class="star star-2"></span>
+            <span class="star star-3"></span>
+            <span class="star star-4"></span>
+            <span class="star star-5"></span>
+            <span class="star star-6"></span>
+            <span class="star star-7"></span>
+            <span class="star star-8"></span>
+        </div>
+
+        <div class="moon-glow"></div>
+
+        <div class="cloud cloud-1"></div>
+        <div class="cloud cloud-2"></div>
+        <div class="cloud cloud-3"></div>
+
+        <div class="rain">
+            <span class="drop drop-1"></span>
+            <span class="drop drop-2"></span>
+            <span class="drop drop-3"></span>
+            <span class="drop drop-4"></span>
+            <span class="drop drop-5"></span>
+            <span class="drop drop-6"></span>
+        </div>
+
+        <div class="wind-swirl wind-swirl-1"></div>
+        <div class="wind-swirl wind-swirl-2"></div>
+
+        <div class="particle particle-1"></div>
+        <div class="particle particle-2"></div>
+        <div class="particle particle-3"></div>
+        <div class="particle particle-4"></div>
+
+        <div class="abstract-shape shape-circle"></div>
+        <div class="abstract-shape shape-ring"></div>
+    </div>
+
+    <header class="hero">
+        <div class="hero-content glass-panel">
+            <p class="eyebrow">About</p>
+            <h1 class="hero-title">About This Project</h1>
+            <p class="hero-subtitle">A simple Flask weather app built with Open-Meteo's free API.</p>
+        </div>
+    </header>
+
+    <main class="main-content">
+
+        <section class="weather-section glass-panel" aria-label="Project overview">
+            <div class="weather-header">
+                <h2 class="weather-city">What It Does</h2>
+            </div>
+            <p class="hero-subtitle" style="max-width:640px;margin:0 auto;">
+                Weather Forecast is a beginner-friendly project that lets you search any city
+                and get its current conditions and a multi-day outlook, pulled live from the
+                Open-Meteo API. No API key, no sign-up, just search and see.
+            </p>
+        </section>
+
+        <section class="forecast-section" aria-label="Key features">
+            <h2 class="section-title">Key Features</h2>
+
+            <div class="forecast-grid">
+                <article class="forecast-card glass-panel">
+                    <p class="forecast-day">Live Search</p>
+                    <p class="forecast-description">Look up current weather for any city by name.</p>
+                </article>
+
+                <article class="forecast-card glass-panel">
+                    <p class="forecast-day">Detailed Conditions</p>
+                    <p class="forecast-description">Temperature, feels-like, humidity, wind, sunrise &amp; sunset.</p>
+                </article>
+
+                <article class="forecast-card glass-panel">
+                    <p class="forecast-day">5-Day Outlook</p>
+                    <p class="forecast-description">A quick glance at the days ahead, with min &amp; max temps.</p>
+                </article>
+
+                <article class="forecast-card glass-panel">
+                    <p class="forecast-day">No API Key</p>
+                    <p class="forecast-description">Powered entirely by the free, open Open-Meteo API.</p>
+                </article>
+            </div>
+        </section>
+
+        <section class="weather-section glass-panel" aria-label="Built with">
+            <div class="weather-header">
+                <h2 class="weather-city">Built With</h2>
+            </div>
+            <div class="weather-details">
+                <article class="detail-card">
+                    <p class="detail-label">Backend</p>
+                    <p class="detail-value">Flask</p>
+                </article>
+                <article class="detail-card">
+                    <p class="detail-label">Templating</p>
+                    <p class="detail-value">Jinja2</p>
+                </article>
+                <article class="detail-card">
+                    <p class="detail-label">Weather Data</p>
+                    <p class="detail-value">Open-Meteo</p>
+                </article>
+                <article class="detail-card">
+                    <p class="detail-label">Styling</p>
+                    <p class="detail-value">Custom CSS</p>
+                </article>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="site-footer">
+        <p>Weather data provided by Open-Meteo.</p>
+    </footer>
+
+</body>
+</html>
