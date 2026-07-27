@@ -1,4 +1,5 @@
 import requests
+import time
 from datetime import datetime
 
 # Maps Open-Meteo's WMO weather codes to a human-readable description
@@ -29,6 +30,12 @@ WEATHER_CODES = {
 }
 
 DEFAULT_CONDITION = ("Unknown", "cloudy.png")
+
+# Simple in-memory cache: { "lat,lon": (timestamp, weather_dict, forecast_list) }
+# Avoids repeat API calls for the same location within CACHE_SECONDS,
+# which reduces how often we hit Open-Meteo's rate limit.
+_weather_cache = {}
+CACHE_SECONDS = 600  # 10 minutes
 
 
 def _describe(code):
@@ -71,12 +78,33 @@ def get_weather(latitude, longitude, city_name):
         "forecast_days": 6
     }
 
-    try:
-        response = requests.get(url, params=params, timeout=20)
-        response.raise_for_status()
-        data = response.json()
-    except requests.exceptions.RequestException as e:
-        print(f"[weather.py] Request to Open-Meteo failed: {e}")
+    cache_key = f"{round(latitude, 2)},{round(longitude, 2)}"
+    cached = _weather_cache.get(cache_key)
+    if cached and (time.time() - cached[0]) < CACHE_SECONDS:
+        print(f"[weather.py] Using cached weather for {cache_key}")
+        weather, forecast = cached[1], cached[2]
+        weather = dict(weather)  # copy so we can set the current city name
+        weather["city"] = city_name
+        return weather, forecast
+
+    for attempt in range(3):
+        try:
+            response = requests.get(url, params=params, timeout=20)
+            response.raise_for_status()
+            data = response.json()
+            break
+        except requests.exceptions.HTTPError as e:
+            if response.status_code == 429 and attempt < 2:
+                wait = 2 * (attempt + 1)
+                print(f"[weather.py] Rate limited, retrying in {wait} seconds...")
+                time.sleep(wait)
+                continue
+            print(f"[weather.py] HTTP error from Open-Meteo: {e}")
+            return None, None
+        except requests.exceptions.RequestException as e:
+            print(f"[weather.py] Request to Open-Meteo failed: {e}")
+            return None, None
+    else:
         return None, None
 
     current = data.get("current")
@@ -112,4 +140,5 @@ def get_weather(latitude, longitude, city_name):
             "description": day_condition
         })
 
+    _weather_cache[cache_key] = (time.time(), weather, forecast)
     return weather, forecast
