@@ -13,8 +13,8 @@
         <div class="nav-container">
             <a href="{{ url_for('index') }}" class="nav-brand">Weather Forecast</a>
             <div class="nav-links">
-                <a href="{{ url_for('index') }}" class="nav-link {% if request.endpoint == 'index' %}active{% endif %}">HOME</a>
-                <a href="{{ url_for('about') }}" class="nav-link {% if request.endpoint == 'about' %}active{% endif %}">WEATHER</a>
+                <a href="{{ url_for('about') }}" class="nav-link {% if request.endpoint == 'about' %}active{% endif %}">Home</a>
+                <a href="{{ url_for('index') }}" class="nav-link {% if request.endpoint == 'index' %}active{% endif %}">Weather</a>
             </div>
         </div>
     </nav>
