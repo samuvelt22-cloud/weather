@@ -1,0 +1,16 @@
+# Python environment
+venv/
+.env
+
+# Bytecode
+__pycache__/
+*.py[cod]
+
+# Flask cache files
+instance/
+*.sqlite
+
+# Editor files
+.vscode/
+*.swp
+*.swo

@@ -66,7 +66,7 @@
         <div class="hero-content glass-panel">
             <p class="eyebrow">About</p>
             <h1 class="hero-title">About This Project</h1>
-            <p class="hero-subtitle">A simple Flask weather app built with Open-Meteo's free API.</p>
+            <p class="hero-subtitle">A simple Flask weather app built with OpenWeather's API and optional Open-Meteo fallback.</p>
         </div>
     </header>
 
@@ -103,8 +103,8 @@
                 </article>
 
                 <article class="forecast-card glass-panel">
-                    <p class="forecast-day">No API Key</p>
-                    <p class="forecast-description">Powered entirely by the free, open Open-Meteo API.</p>
+                    <p class="forecast-day">API Key Enabled</p>
+                    <p class="forecast-description">Uses OpenWeather API when a key is configured, with fallback support.</p>
                 </article>
             </div>
         </section>
@@ -124,7 +124,7 @@
                 </article>
                 <article class="detail-card">
                     <p class="detail-label">Weather Data</p>
-                    <p class="detail-value">Open-Meteo</p>
+                    <p class="detail-value">OpenWeather / Open-Meteo</p>
                 </article>
                 <article class="detail-card">
                     <p class="detail-label">Styling</p>
@@ -156,8 +156,7 @@
     </main>
 
     <footer class="site-footer">
-        <p>Weather data provided by Open-Meteo.</p>
-    </footer>
+        <p>Weather data provided by OpenWeather, with Open-Meteo fallback.</p>
 
 </body>
 </html>
