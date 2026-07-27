@@ -11,7 +11,10 @@
     <!-- Navigation menu bar -->
     <nav class="site-nav">
         <div class="nav-container">
-            <a href="{{ url_for('index') }}" class="nav-brand">Weather Forecast</a>
+            <a href="{{ url_for('about') }}" class="nav-brand">
+                <img src="{{ url_for('static', filename='images/logo.svg') }}" alt="Weather Forecast logo" class="nav-logo">
+                Weather Forecast
+            </a>
             <div class="nav-links">
                 <a href="{{ url_for('about') }}" class="nav-link {% if request.endpoint == 'about' %}active{% endif %}">Home</a>
                 <a href="{{ url_for('index') }}" class="nav-link {% if request.endpoint == 'index' %}active{% endif %}">Weather</a>
@@ -126,6 +129,26 @@
                 <article class="detail-card">
                     <p class="detail-label">Styling</p>
                     <p class="detail-value">Custom CSS</p>
+                </article>
+            </div>
+        </section>
+
+        <section class="weather-section glass-panel" aria-label="Student details">
+            <div class="weather-header">
+                <h2 class="weather-city">Submitted By</h2>
+            </div>
+            <div class="weather-details">
+                <article class="detail-card">
+                    <p class="detail-label">Name</p>
+                    <p class="detail-value">T Samuvel</p>
+                </article>
+                <article class="detail-card">
+                    <p class="detail-label">Roll No</p>
+                    <p class="detail-value">24BCA145</p>
+                </article>
+                <article class="detail-card">
+                    <p class="detail-label">Department</p>
+                    <p class="detail-value">BCA</p>
                 </article>
             </div>
         </section>

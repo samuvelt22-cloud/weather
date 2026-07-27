@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+    <defs>
+        <radialGradient id="badgeGlow" cx="50%" cy="35%" r="70%">
+            <stop offset="0%" stop-color="#134074"/>
+            <stop offset="55%" stop-color="#0B2545"/>
+            <stop offset="100%" stop-color="#061A40"/>
+        </radialGradient>
+        <radialGradient id="moonGlow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#A8D8FF" stop-opacity="0.9"/>
+            <stop offset="100%" stop-color="#6EC6FF" stop-opacity="0"/>
+        </radialGradient>
+    </defs>
+
+    <circle cx="100" cy="100" r="96" fill="url(#badgeGlow)"/>
+    <circle cx="100" cy="100" r="96" fill="none" stroke="#6EC6FF" stroke-opacity="0.35" stroke-width="1"/>
+
+    <circle cx="108" cy="76" r="40" fill="url(#moonGlow)"/>
+    <path d="M 130 58 A 30 30 0 1 0 130 118 A 24 24 0 1 1 130 58 Z" fill="#EAF6FF"/>
+
+    <ellipse cx="86" cy="140" rx="50" ry="22" fill="#FFFFFF"/>
+    <ellipse cx="60" cy="131" rx="22" ry="19" fill="#FFFFFF"/>
+    <ellipse cx="110" cy="128" rx="20" ry="17" fill="#FFFFFF"/>
+
+    <path d="M158 46 l3.5 9 l9 3.5 l-9 3.5 l-3.5 9 l-3.5 -9 l-9 -3.5 l9 -3.5 Z" fill="#A8D8FF"/>
+</svg>
